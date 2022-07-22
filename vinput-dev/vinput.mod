@@ -1,0 +1,2 @@
+/root/testcode/vinput.o
+
