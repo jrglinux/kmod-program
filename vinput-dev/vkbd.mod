@@ -1,2 +1,0 @@
-/root/testcode/vkbd.o
-
