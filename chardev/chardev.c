@@ -16,7 +16,7 @@ static ssize_t dev_write(struct file *, const char __user *, size_t, loff_t *);
 #define DEVICE_NAME "chardev"
 #define BUF_LEN	80
 
-static char msg[BUF_LEN];
+static char msg[BUF_LEN] = {0};
 
 static int major;	/*major number assigned to our device driver*/
 
@@ -64,7 +64,9 @@ static int dev_open(struct inode *inode, struct file *file)
     if(atomic_cmpxchg(&in_use, CDEV_NOT_USED, CDEV_IN_USED))
         return -EBUSY;
 
-    sprintf(msg, "I already told you %d times hello\n", counter++);
+    if (strlen(msg) == 0 || !memcmp(msg, "reset all", 9))
+        sprintf(msg, "We have reset the message %d times.\n", ++counter);
+
     try_module_get(THIS_MODULE);
 
     return 0;
@@ -111,8 +113,29 @@ static ssize_t dev_read(struct file *filp,
 static ssize_t dev_write(struct file *filp, const char __user *buffer,
                         size_t len, loff_t *off)
 {
-    pr_alert("Sorry, this operation is not supported\n");
-    return -EINVAL;
+    int bytes_write = 0;
+    char *msg_ptr = msg;
+
+    if(!*(msg_ptr + *off)){
+        *off = 0;
+        return 0;
+    }
+
+    if(len >= BUF_LEN){
+        pr_alert("Sorry, this operation is not supported\n");
+        return -EINVAL;
+    }
+    
+    msg_ptr += *off;
+    while(len && *msg_ptr){
+        get_user(*(msg_ptr++), buffer++);
+        len--;
+        bytes_write++;
+    }
+
+    *off += bytes_write;
+
+    return bytes_write;
 }
 
 module_init(chardev_init);
