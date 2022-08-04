@@ -9,7 +9,10 @@
 #endif
 
 #define procfs_name     "helloproc"
+#define PROCFS_MAX_SIZE     1024
 static struct proc_dir_entry *hello_proc_file;
+static char procfs_buf[PROCFS_MAX_SIZE];
+static unsigned long procfs_buf_size = 0;
 
 static ssize_t procfile_read(struct file *filePointer, char __user *buffer,
 				size_t buf_len, loff_t *offset)
@@ -28,13 +31,31 @@ static ssize_t procfile_read(struct file *filePointer, char __user *buffer,
     return ret;
 }
 
+static ssize_t procfile_write(struct file *file, const char __user *buffer,
+                size_t len, loff_t *offset)
+{
+    procfs_buf_size = len;
+    if(procfs_buf_size > PROCFS_MAX_SIZE)
+        procfs_buf_size = PROCFS_MAX_SIZE;
+
+    if(copy_from_user(procfs_buf, buffer, procfs_buf_size))
+        return -EFAULT;
+
+    procfs_buf[(procfs_buf_size & (PROCFS_MAX_SIZE - 1))] = '\0';
+    pr_info("proc file write %s\n", procfs_buf);
+
+    return procfs_buf_size;
+}
+
 #ifdef HAVE_PROC_OPS
 static const struct proc_ops proc_file_ops = {
     .proc_read = procfile_read,
+    .proc_write = procfile_write,
 };
 #else
 static const struct file_operations proc_file_ops = {
     .read = procfile_read,
+    .write = procfile_write,
 };
 #endif
 
