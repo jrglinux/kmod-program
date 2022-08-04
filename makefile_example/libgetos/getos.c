@@ -2,17 +2,15 @@
 #include <stdio.h>
 #include <string.h>
 
-#define os_release "/etc/os-release"
-
 void get_os_version()
 {
     size_t len = 0;
     FILE *fp;
     char *str = NULL;
 
-    fp = fopen(os_release, "r");
+    fp = fopen(os_file, "r");
     if(NULL == fp){
-    	printf("open %s failed\n", os_release);
+    	printf("open %s failed\n", os_file);
 	return;
     }
 
