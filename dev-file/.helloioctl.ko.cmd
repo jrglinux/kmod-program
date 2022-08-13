@@ -1,0 +1,1 @@
+cmd_/root/testcode/kmod-program/dev-file/helloioctl.ko := ld -r  -m elf_x86_64  --build-id=sha1  -T scripts/module.lds -o /root/testcode/kmod-program/dev-file/helloioctl.ko /root/testcode/kmod-program/dev-file/helloioctl.o /root/testcode/kmod-program/dev-file/helloioctl.mod.o;  true
