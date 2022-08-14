@@ -1,1 +1,0 @@
-cmd_/root/testcode/kmod-program/dev-file/modules.order := {   echo /root/testcode/kmod-program/dev-file/helloioctl.ko;   echo /root/testcode/kmod-program/dev-file/chardev.ko; :; } | awk '!x[$$0]++' - > /root/testcode/kmod-program/dev-file/modules.order

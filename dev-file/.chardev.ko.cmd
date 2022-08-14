@@ -1,1 +1,0 @@
-cmd_/root/testcode/kmod-program/dev-file/chardev.ko := ld -r  -m elf_x86_64  --build-id=sha1  -T scripts/module.lds -o /root/testcode/kmod-program/dev-file/chardev.ko /root/testcode/kmod-program/dev-file/chardev.o /root/testcode/kmod-program/dev-file/chardev.mod.o;  true

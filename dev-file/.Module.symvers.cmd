@@ -1,1 +1,0 @@
-cmd_/root/testcode/kmod-program/dev-file/Module.symvers := sed 's/\.ko$$/\.o/' /root/testcode/kmod-program/dev-file/modules.order | scripts/mod/modpost -m -a  -o /root/testcode/kmod-program/dev-file/Module.symvers -e -i Module.symvers   -T -
